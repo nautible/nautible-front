@@ -1,0 +1,59 @@
+name: CI/CD for nautible front app
+
+on:
+  push:
+    branches: [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  # workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+
+    - name: setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+
+    - name: Cache node modules
+      uses: actions/cache@v2
+      with:
+        path: ./app/node_modules
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - name: setup env file
+      run: |
+        cd $GITHUB_WORKSPACE/app
+        cp .env.sample .env
+
+    - name: Build
+      env:
+        CI: false
+      run: |
+        cd $GITHUB_WORKSPACE/app
+        yarn
+        yarn build
+
+    - name: Test
+      env:
+        CI: false
+      run: |
+        cd $GITHUB_WORKSPACE/app
+        yarn test
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: deploy to s3 
+      run: |
+        cd $GITHUB_WORKSPACE/app
+        aws s3 sync ./build s3://${{ secrets.S3_STATIC_WEB_BUCKET }} --exclude "*.git/*" --delete

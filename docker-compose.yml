@@ -1,0 +1,14 @@
+version: '3'
+services:
+  nautible:
+    container_name: frontend_nautible
+    build:
+      context: .
+    tty: true
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./:/usr/src/app
+    command: sh -c "cd app && yarn start"
+    ports:
+      - "3000:3000"
