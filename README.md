@@ -1,4 +1,4 @@
-# nautible-frontend
+# nautible-app-ms-front
 
 nautibleのサービスを確認するためのフロントエンドアプリケーション  
 React+Typescriptで構築  
