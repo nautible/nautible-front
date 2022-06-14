@@ -85,11 +85,9 @@ const HeaderNavigation: React.FC = () => {
                 <LibraryBooksIcon onClick={linkOrderHistory} />
               </Typography>
             </IconButton>
-            { AuthService.getToken() != null &&
             <Button variant="contained" color="default" onClick={() => AuthService.logout()}>
                 ログアウト
             </Button>
-            }
           </div>
           }
           { AuthService.isAuthEnable() && AuthService.getToken() == null &&
