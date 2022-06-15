@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import CartIcon from '@material-ui/icons/ShoppingCart'
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
+import Button from '@material-ui/core/Button'
+import AuthService from "./../../services/AuthService"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,6 +67,7 @@ const HeaderNavigation: React.FC = () => {
               <img src="/logo.png" alt="nautible" className={classes.headerLogo}/>
             </Typography>
           </Link>
+          { AuthService.getToken() != null &&
           <div className={classes.headerMenu}>
             {
               //カートボタン
@@ -82,7 +85,18 @@ const HeaderNavigation: React.FC = () => {
                 <LibraryBooksIcon onClick={linkOrderHistory} />
               </Typography>
             </IconButton>
+            <Button variant="contained" color="default" onClick={() => AuthService.logout()}>
+                ログアウト
+            </Button>
           </div>
+          }
+          { AuthService.isAuthEnable() && AuthService.getToken() == null &&
+          <div className={classes.headerMenu}>
+            <Button variant="contained" color="default" onClick={() => AuthService.login()}>
+                ログイン
+            </Button>
+          </div>
+          }
         </Toolbar>
       </AppBar>
     </div>
