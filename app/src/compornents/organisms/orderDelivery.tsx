@@ -6,7 +6,6 @@ import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import {getUrlWithPrefix} from '../../utils/RequestUtils'
 
 import {Delivery} from '../../types/order'
 
@@ -41,7 +40,7 @@ const OrderDelivery: React.FC<{delivery: Delivery}> = (delivery) => {
     //顧客情報取得
     // TODO 暫定でId「1」固定で取得
     axios.get(
-      getUrlWithPrefix('/customer/1'),
+      '/customer/1',
     ).then(result => {
       const delivery: Delivery = {
         ...result.data.customer,

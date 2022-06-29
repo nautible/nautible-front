@@ -8,7 +8,6 @@ import ProductInputDialog from '../templates/productInputDialog'
 import {Product} from '../../types/product'
 import NavigationButton from '../molecules/navigationButton'
 import {Cart, CartProduct} from '../../types/cart'
-import {getUrlWithPrefix} from '../../utils/RequestUtils'
 
 const dummyProduct: Product = {
     "id": "1",
@@ -46,7 +45,7 @@ const ProductDetailPage: React.FC = () => {
   const fetchProductDetail = async () => {
     const productId = location.pathname.split('/').slice(-1)[0]
     axios.get(
-      getUrlWithPrefix("/product/" + productId),
+      "/product/" + productId,
     ).then(result => {
       setProduct(result.data)
     }).catch(err =>{
@@ -66,7 +65,7 @@ const ProductDetailPage: React.FC = () => {
     // カード情報取
     // TODO 暫定でId「1」固定で取得
     axios.get(
-      getUrlWithPrefix('/cart/1'),
+      '/cart/1',
     ).then(result => {
       if(result.data) {
         cart = result.data
@@ -87,7 +86,7 @@ const ProductDetailPage: React.FC = () => {
           cart.products = [cartProduct]
         }
         axios.post(
-          getUrlWithPrefix('/cart/'),cart
+          '/cart/',cart
         ).catch(err =>{
           console.log(err)
         })
