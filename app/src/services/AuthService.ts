@@ -1,4 +1,4 @@
-import Keycloak, { KeycloakConfig } from "keycloak-js";
+import Keycloak, { KeycloakConfig, KeycloakLogoutOptions } from "keycloak-js";
 
 const keycloakConfig: KeycloakConfig = {
   realm: process.env.REACT_APP_AUTH_KEYCLOAK_REALM!,
@@ -80,7 +80,11 @@ class KeyCloakAuthService implements AuthService {
     return this.keycloak.login();
   }
   logout(): Promise<any> {
-    return this.keycloak.logout();
+    let keycloakLogoutOptions :KeycloakLogoutOptions = {
+      redirectUri: window.location.protocol + "//" + window.location.host
+    }
+
+    return this.keycloak.logout(keycloakLogoutOptions);
   }
 }
 
