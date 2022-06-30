@@ -7,7 +7,6 @@ import Grid from '@material-ui/core/Grid';
 
 import ProductList from '../organisms/productList'
 import {Product} from '../../types/product'
-import {getUrlWithPrefix} from '../../utils/RequestUtils'
 
 // ダミーデータ
 const dummyProducts: Product[] = [
@@ -75,7 +74,6 @@ const ProductListPage: React.FC = () => {
 
   const fetchProduct = async () => {
     axios.get(
-      // getUrlWithPrefix('/product/'),
       '/product/',
     ).then(result => {
       setProducts(result.data)

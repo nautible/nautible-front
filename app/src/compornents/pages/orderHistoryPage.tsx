@@ -7,7 +7,6 @@ import Box from '@material-ui/core/Box';
 
 import OrderHistory from '../organisms/orderHistory'
 import {Order, OrderProduct, Delivery, Payment} from '../../types/order'
-import {getUrlWithPrefix} from '../../utils/RequestUtils'
 
 // ダミーデータ
 const dummyProduct1: OrderProduct[] = [
@@ -75,7 +74,7 @@ const OrderHistoryPage: React.FC = () => {
   const fetchOrderHistory = async () => {
     // TODO 暫定対応。顧客Idは1固定で取得
     axios.get(
-      getUrlWithPrefix('/order/findByCustomerId/1'),
+      '/order/findByCustomerId/1',
     ).then(result => {
       setOrderHistory({orderHistories: result.data.orders});
     }).catch(err =>{

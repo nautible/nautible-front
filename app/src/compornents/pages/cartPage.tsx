@@ -7,7 +7,6 @@ import { useHistory } from "react-router-dom";
 import CartItem from '../organisms/cartItem'
 import NavigationButton from '../molecules/navigationButton'
 import {Cart, CartProduct} from '../../types/cart'
-import {getUrlWithPrefix} from '../../utils/RequestUtils'
 
 const dummyProducts: CartProduct[] = [
   {
@@ -63,7 +62,7 @@ const CartPage: React.FC = () => {
   const fetchCart = async () => {
     // カート情報取得 TODO 暫定でId「1」固定で取得
     axios.get(
-      getUrlWithPrefix('/cart/1'),
+      '/cart/1',
     ).then(result => {
       if(!result.data){
         return;
@@ -100,7 +99,7 @@ const CartPage: React.FC = () => {
 
     // カート情報情報更新
     axios.put(
-      getUrlWithPrefix('/cart/'),cartCopy
+      '/cart/',cartCopy
     ).catch(err =>{
       console.log(err)
     })
@@ -118,7 +117,7 @@ const CartPage: React.FC = () => {
     setCart({cart: {...cartCopy}})
 
     axios.put(
-      getUrlWithPrefix('/cart/'),cartCopy
+      '/cart/',cartCopy
     ).catch(err =>{
       console.log(err)
     })

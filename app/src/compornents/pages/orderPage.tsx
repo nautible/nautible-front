@@ -13,7 +13,6 @@ import OrderDialog from '../templates/orderDialog'
 
 import {Cart, CartProduct} from '../../types/cart'
 import {Order, OrderProduct, Delivery, Payment} from '../../types/order'
-import {getUrlWithPrefix} from '../../utils/RequestUtils'
 
 const dummyProducts: CartProduct[] = [
   {
@@ -84,7 +83,7 @@ const OrderPage: React.FC = () => {
     // カード情報取
     // TODO 暫定でId「1」固定で取得
     axios.get(
-      getUrlWithPrefix('/cart/1'),
+      '/cart/1',
     ).then(result => {
       let allPrice = 0,allCount = 0
       result.data.products.forEach((element: CartProduct) => {
@@ -134,7 +133,7 @@ const OrderPage: React.FC = () => {
     }
 
     axios.post(
-      getUrlWithPrefix('/order/'),order
+      '/order/',order
     ).catch(err =>{
       console.log(err)
     })
