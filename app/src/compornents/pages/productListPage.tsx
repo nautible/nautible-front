@@ -7,7 +7,6 @@ import Grid from '@material-ui/core/Grid';
 
 import ProductList from '../organisms/productList'
 import {Product} from '../../types/product'
-import {getUrlWithPrefix} from '../../utils/RequestUtils'
 
 // ダミーデータ
 const dummyProducts: Product[] = [
@@ -59,6 +58,14 @@ type Data = {
 
 // 商品一覧画面
 const ProductListPage: React.FC = () => {
+  // const ProductListPage: React.FC<{keycloak: KeycloakInstance}> = ({keycloak}) => {
+
+  // console.log(keycloak.loadUserInfo())
+
+  // axios.interceptors.request.use((config) => {
+  //       config.headers.Authorization = `Bearer ${keycloak.token}`;
+  //       return Promise.resolve(config);
+  // });
 
   const classes = useStyles()
 
@@ -67,7 +74,7 @@ const ProductListPage: React.FC = () => {
 
   const fetchProduct = async () => {
     axios.get(
-      getUrlWithPrefix('/product/'),
+      '/product/',
     ).then(result => {
       setProducts(result.data)
     }).catch(err =>{
