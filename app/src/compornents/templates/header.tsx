@@ -40,6 +40,16 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 'auto',
       height: '35px',
     },
+    headerLogin: {
+      display: 'flex',
+      marginLeft: 'auto',
+      height: '35px',
+    },
+    headerLogout: {
+      display: 'flex',
+      marginLeft: '10px',
+      height: '35px',
+    },
   })
 )
 
@@ -88,14 +98,14 @@ const HeaderNavigation: React.FC = () => {
           </div>
           }
           { AuthService.isAuthEnable() && AuthService.getToken() != null &&
-          <div className={classes.headerMenu}>
+          <div className={classes.headerLogout}>
             <Button variant="contained" color="default" onClick={() => AuthService.logout()}>
                 ログアウト
             </Button>
           </div>
           }
           { AuthService.isAuthEnable() && AuthService.getToken() == null &&
-          <div className={classes.headerMenu}>
+          <div className={classes.headerLogin}>
             <Button variant="contained" color="default" onClick={() => AuthService.login()}>
                 ログイン
             </Button>
