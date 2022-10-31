@@ -67,7 +67,7 @@ const HeaderNavigation: React.FC = () => {
               <img src="/logo.png" alt="nautible" className={classes.headerLogo}/>
             </Typography>
           </Link>
-          { (!AuthService.isAuthEnable() || AuthService.isLoggedIn()) &&
+          { (!AuthService.isAuthEnable() || AuthService.getToken() != null ) &&
           <div className={classes.headerMenu}>
             {
               //カートボタン
@@ -87,14 +87,14 @@ const HeaderNavigation: React.FC = () => {
             </IconButton>
           </div>
           }
-          { AuthService.isAuthEnable() && AuthService.isLoggedIn() &&
+          { AuthService.isAuthEnable() && AuthService.getToken() != null &&
           <div className={classes.headerMenu}>
             <Button variant="contained" color="default" onClick={() => AuthService.logout()}>
                 ログアウト
             </Button>
           </div>
           }
-          { AuthService.isAuthEnable() && AuthService.isLoggedIn() &&
+          { AuthService.isAuthEnable() && AuthService.getToken() == null &&
           <div className={classes.headerMenu}>
             <Button variant="contained" color="default" onClick={() => AuthService.login()}>
                 ログイン
