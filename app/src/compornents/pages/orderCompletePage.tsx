@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,9 +21,9 @@ const OrderCompletePage: React.FC = () => {
 
   const classes = useStyles()
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const linkTop = () => {
-    history.push("/")
+    navigate("/")
   }
   return (
     <Box className={classes.root} m={2} p={1}>
