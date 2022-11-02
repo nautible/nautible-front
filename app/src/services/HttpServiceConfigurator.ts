@@ -5,8 +5,10 @@ const configure = () => {
   axios.interceptors.request.use((config) => {
     if(AuthService.getToken() != null){
       const cb = () => {
-        // add token to http header 
-        config.headers.Authorization = `Bearer ${AuthService.getToken()}`;
+        // add token to http header
+        if(config.headers){
+          config.headers.Authorization = `Bearer ${AuthService.getToken()}`
+        }
         config.baseURL = process.env.REACT_APP_URL_PREFIX
         return Promise.resolve(config);
       }
