@@ -58,14 +58,6 @@ type Data = {
 
 // 商品一覧画面
 const ProductListPage: React.FC = () => {
-  // const ProductListPage: React.FC<{keycloak: KeycloakInstance}> = ({keycloak}) => {
-
-  // console.log(keycloak.loadUserInfo())
-
-  // axios.interceptors.request.use((config) => {
-  //       config.headers.Authorization = `Bearer ${keycloak.token}`;
-  //       return Promise.resolve(config);
-  // });
 
   const classes = useStyles()
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route
 } from "react-router-dom";
 
@@ -56,26 +56,14 @@ const App: React.FC = () => {
         <Box className={classes.root}>
           <Header />
           { data.authenticated &&
-          <Switch>
-            <Route path="/" exact>
-              <ProductListPage />
-            </Route>
-            <Route path="/productDetail/:id" exact>
-              <ProductDetailPage />
-            </Route>
-            <Route path="/cart/" exact>
-              <CartPage />
-            </Route>
-            <Route path="/order/" exact>
-              <OrderPage />
-            </Route>
-            <Route path="/orderComplete/" exact>
-              <OrderCompletePage />
-            </Route>
-            <Route path="/orderHistory/" exact>
-              <OrderHistoryPage />
-            </Route>
-          </Switch>
+          <Routes>
+            <Route path="/" element={<ProductListPage />} />
+            <Route path="/productDetail/:id" element={<ProductDetailPage />} />
+            <Route path="/cart/" element={<CartPage />} />
+            <Route path="/order/" element={<OrderPage />} />
+            <Route path="/orderComplete/" element={<OrderCompletePage />} />
+            <Route path="/orderHistory/" element={<OrderHistoryPage />}/>
+          </Routes>
           }
           { !data.authenticated &&
             <BlankPage />
