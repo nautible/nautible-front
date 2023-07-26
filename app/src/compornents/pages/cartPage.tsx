@@ -146,7 +146,7 @@ const CartPage: React.FC = () => {
   return (
     <div className={classes.root}>
       <CartItem cart={data.cart} handleChange={itemCountChange} handleDelete={itemDelete} />
-      <NavigationButton forwardName="購入へ進む" forward={forward} backName="商品一覧へ戻る" back={back} />
+      <NavigationButton forwardName="購入確認へ" forward={forward} backName="商品一覧へ戻る" back={back} />
     </div>
   )
 }
