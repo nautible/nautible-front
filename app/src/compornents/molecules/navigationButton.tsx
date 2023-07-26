@@ -24,13 +24,13 @@ const NavigationButton: React.FC<{forwardName: string, forward: () => void, back
   return (
     <Box className={classes.naviButton}>
       <Box m={2}>
-        <Button variant="contained" color="primary" onClick={forward}>
-          {forwardName}
+        <Button variant="contained" color="primary" onClick={back}>
+          {backName}
         </Button>
       </Box>
       <Box m={2}>
-        <Button variant="contained" color="primary" onClick={back}>
-          {backName}
+        <Button variant="contained" color="primary" onClick={forward}>
+          {forwardName}
         </Button>
       </Box>
     </Box>
