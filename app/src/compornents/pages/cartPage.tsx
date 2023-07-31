@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import CartItem from '../organisms/cartItem'
 import NavigationButton from '../molecules/navigationButton'
@@ -136,12 +136,12 @@ const CartPage: React.FC = () => {
     cart.allPrice = allPrice
   }
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const forward = () => {
-    history.push("/order")
+    navigate("/order")
   }
   const back = () => {
-    history.push("/")
+    navigate("/")
   }
   return (
     <div className={classes.root}>

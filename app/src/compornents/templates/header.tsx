@@ -1,6 +1,6 @@
 // public Compornents
 import React from 'react'
-import { Link, useHistory } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 // Material-UI
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
@@ -40,6 +40,16 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 'auto',
       height: '35px',
     },
+    headerLogin: {
+      display: 'flex',
+      marginLeft: 'auto',
+      height: '35px',
+    },
+    headerLogout: {
+      display: 'flex',
+      marginLeft: '10px',
+      height: '35px',
+    },
   })
 )
 
@@ -48,12 +58,12 @@ const HeaderNavigation: React.FC = () => {
 
   const classes = useStyles()
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const linkCart = () => {
-    history.push("/cart")
+    navigate("/cart")
   }
   const linkOrderHistory = () => {
-    history.push("/orderHistory")
+    navigate("/orderHistory")
   }
   return (
     <div className={classes.root}>
@@ -67,7 +77,7 @@ const HeaderNavigation: React.FC = () => {
               <img src="/logo.png" alt="nautible" className={classes.headerLogo}/>
             </Typography>
           </Link>
-          { AuthService.getToken() != null &&
+          { (!AuthService.isAuthEnable() || AuthService.getToken() != null ) &&
           <div className={classes.headerMenu}>
             {
               //カートボタン
@@ -85,13 +95,17 @@ const HeaderNavigation: React.FC = () => {
                 <LibraryBooksIcon onClick={linkOrderHistory} />
               </Typography>
             </IconButton>
+          </div>
+          }
+          { AuthService.isAuthEnable() && AuthService.getToken() != null &&
+          <div className={classes.headerLogout}>
             <Button variant="contained" color="default" onClick={() => AuthService.logout()}>
                 ログアウト
             </Button>
           </div>
           }
           { AuthService.isAuthEnable() && AuthService.getToken() == null &&
-          <div className={classes.headerMenu}>
+          <div className={classes.headerLogin}>
             <Button variant="contained" color="default" onClick={() => AuthService.login()}>
                 ログイン
             </Button>

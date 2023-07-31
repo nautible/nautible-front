@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from 'axios';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
@@ -38,7 +38,7 @@ const ProductDetailPage: React.FC = () => {
   // APIができたら入れ替え
   //const {id} = useParams<ParamTypes>()
   //const [data, setProduct] = useState({ product: '' });
-  const history = useHistory()
+  const navigate = useNavigate()
   const [data, setProduct] = useState<Product>({id: '', name: '', maker: '', price: 0, description: ''});
 
   // 商品詳細情報の取得
@@ -101,12 +101,12 @@ const ProductDetailPage: React.FC = () => {
 
   // カート画面へ進む
   const forward = () => {
-    history.push("/cart")
+    navigate("/cart")
   };
 
   // 商品一覧に戻る
   const back = () => {
-    history.push("/")
+    navigate("/")
   };
 
   return (

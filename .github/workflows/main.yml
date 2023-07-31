@@ -4,11 +4,16 @@ on:
   push:
     branches: [ "develop","feature/*","hotfix/*" ]
   # Allows you to run this workflow manually from the Actions tab
-  # workflow_dispatch: 
+  workflow_dispatch: 
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: develop # for azure oidc
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
@@ -16,7 +21,7 @@ jobs:
     - name: setup node
       uses: actions/setup-node@v1
       with:
-        node-version: '12.x'
+        node-version: '18.x'
 
     - name: Cache node modules
       uses: actions/cache@v2
@@ -26,12 +31,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-yarn-
 
-    - name: setup env file
+    # AWS
+    - name: setup env file for aws
       run: |
         cd $GITHUB_WORKSPACE/app
-        cp .env.auth-sample .env
+        sed -e "s/\$domain/${{ secrets.AWS_CLOUDFRONT_DOMAIN }}/" .env.auth-sample > .env
 
-    - name: Build
+    - name: Build for aws
       env:
         CI: false
       run: |
@@ -39,7 +45,7 @@ jobs:
         yarn
         yarn build
 
-    - name: Test
+    - name: Test for aws
       env:
         CI: false
       run: |
@@ -49,11 +55,36 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/nautible-dev-githubactions-static-web-deploy-role
+        aws-region: ap-northeast-1
 
-    - name: deploy to s3 
+    - name: deploy to aws s3 
       run: |
         cd $GITHUB_WORKSPACE/app
-        aws s3 sync ./build s3://${{ secrets.S3_STATIC_WEB_BUCKET }} --exclude "*.git/*" --delete
+        aws s3 sync ./build s3://${{ secrets.AWS_S3_STATIC_WEB_BUCKET }} --exclude "*.git/*" --delete
+
+    # Azure
+    - name: setup env file for azure
+      run: |
+        cd $GITHUB_WORKSPACE/app
+        sed -e "s/\$domain/${{ secrets.AZURE_FRONTDOOR_DOMAIN }}/" .env.auth-sample > .env
+
+    - name: Build for azure
+      env:
+        CI: false
+      run: |
+        cd $GITHUB_WORKSPACE/app
+        yarn
+        yarn build
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: deploy to azure storage account
+      run: |
+        cd $GITHUB_WORKSPACE/app
+        az storage blob upload-batch --account-name nautibledevstaticweb -d '$web' -s ./build --overwrite=True

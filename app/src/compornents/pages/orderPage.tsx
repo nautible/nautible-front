@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
-import { useHistory } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 import NavigationButton from '../molecules/navigationButton'
 
@@ -100,12 +100,12 @@ const OrderPage: React.FC = () => {
   }, [setData]);
 
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const forward = () => {
     setOpen(true)
   }
   const back = () => {
-    history.push("/cart")
+    navigate("/cart")
   }
 
   // 注文完了アクション
@@ -138,7 +138,7 @@ const OrderPage: React.FC = () => {
       console.log(err)
     })
 
-    history.push("/orderComplete")
+    navigate("/orderComplete")
   };
 
   // ダイアログを閉じる
