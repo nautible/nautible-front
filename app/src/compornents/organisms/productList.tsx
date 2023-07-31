@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     cardContent: {
       flexGrow: 1,
+      textAlign: 'right',
     },
   })
 )
