@@ -52,12 +52,15 @@ const ProductList:React.FC<{product: Product}> = ({product}) => {
     <Card className={classes.card}>
       <Link to={"/productDetail/" + product.id}>
         <CardMedia component="img" className={classes.cardMedia} image="/item.png" title="item" />
-      </Link>
-      <CardContent className={classes.cardContent}>
         <Typography gutterBottom variant="h5" component="h2">
           {product.name}
         </Typography>
-        <Price value={product.price} />
+      </Link>
+      <Typography>セール中</Typography>
+      <CardContent className={classes.cardContent}>
+        <div>
+          <Price value={product.price} />
+        </div>
       </CardContent>
     </Card>
   )
