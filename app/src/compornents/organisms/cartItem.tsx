@@ -94,7 +94,7 @@ const CartItem: React.FC<{cart: Cart, handleChange: (productId: string, count: n
               <StyledTableCell align="center"><Price value={product.price} /></StyledTableCell>
               <StyledTableCell align="center"><Price value={product.allPrice} /></StyledTableCell>
               <StyledTableCell align="center">
-                <Button value={product.id} onClick={event => handleDelete(product.id)}>削除</Button>
+                <Button variant="contained" color="error" value={product.id} onClick={event => handleDelete(product.id)}>削除</Button>
               </StyledTableCell>
             </StyledTableRow>
           ))}
