@@ -24,12 +24,12 @@ const NavigationButton: React.FC<{forwardName: string, forward: () => void, back
   return (
     <Box className={classes.naviButton}>
       <Box m={2}>
-        <Button variant="contained" color="error" onClick={back}>
+        <Button variant="contained" color="info" onClick={back}>
         {backName}
         </Button>
       </Box>
       <Box m={2}>
-        <Button variant="contained" color="error" onClick={forward}>
+        <Button variant="contained" color="info" onClick={forward}>
         {forwardName}
         </Button>
       </Box>
