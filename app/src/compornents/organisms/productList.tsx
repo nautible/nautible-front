@@ -53,14 +53,10 @@ const ProductList:React.FC<{product: Product}> = ({product}) => {
         <CardMedia component="img" className={classes.cardMedia} image="/item.png" title="item" />
       </Link>
       <CardContent className={classes.cardContent}>
-        <CardContent className={classes.cardContent}>
-          <Price value={product.price} />
-        </CardContent>
-        <CardContent className={classes.cardContent}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {product.name}
-          </Typography>
-        </CardContent>
+        <Typography gutterBottom variant="h5" component="h2">
+          {product.name}
+        </Typography>
+        <Price value={product.price} />
       </CardContent>
     </Card>
   )
