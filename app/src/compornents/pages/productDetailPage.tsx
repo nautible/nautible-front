@@ -112,7 +112,7 @@ const ProductDetailPage: React.FC = () => {
   return (
     <div className={classes.root}>
       <ProductDetail {...data} />
-      <NavigationButton forwardName="カートに入れる" forward={inputCart} backName="商品一覧へ戻る" back={back} />
+      <NavigationButton forwardName="購入" forward={inputCart} backName="商品一覧へ戻る" back={back} />
       <ProductInputDialog openFlag={open} forward={forward} back={back} />
     </div>
   )
