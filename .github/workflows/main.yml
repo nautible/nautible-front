@@ -53,15 +53,22 @@ jobs:
           yarn test
 
       - name: Configure AWS credentials
+        id: login-aws
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/nautible-dev-githubactions-static-web-deploy-role
           aws-region: ap-northeast-1
+        continue-on-error: true
+
+      - name: login-aws when command failure
+        run: echo "result - aws login failure"
+        if: steps.login-aws.outcome == 'failure'
 
       - name: deploy to aws s3
         run: |
           cd $GITHUB_WORKSPACE/app
           aws s3 sync ./build s3://${{ secrets.AWS_S3_STATIC_WEB_BUCKET }} --exclude "*.git/*" --delete
+        if: steps.login-aws.outcome == 'success'
 
       # Azure
       - name: setup env file for azure
@@ -78,13 +85,20 @@ jobs:
           yarn build
 
       - name: Azure Login
+        id: login-azure
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        continue-on-error: true
+
+      - name: login-azure when command failure
+        run: echo "result - azure login failure"
+        if: steps.login-azure.outcome == 'failure'
 
       - name: deploy to azure storage account
         run: |
           cd $GITHUB_WORKSPACE/app
           az storage blob upload-batch --account-name nautibledevstaticweb -d '$web' -s ./build --overwrite=True
+        if: steps.login-azure.outcome == 'success'
