@@ -2,9 +2,9 @@ name: CI/CD for nautible front app
 
 on:
   push:
-    branches: [ "develop","feature/*","hotfix/*" ]
+    branches: ['develop', 'feature/*', 'hotfix/*']
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch: 
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -15,76 +15,90 @@ jobs:
     runs-on: ubuntu-latest
     environment: develop # for azure oidc
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: setup node
-      uses: actions/setup-node@v1
-      with:
-        node-version: '18.x'
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-    - name: Cache node modules
-      uses: actions/cache@v2
-      with:
-        path: ./app/node_modules
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ./app/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-    # AWS
-    - name: setup env file for aws
-      run: |
-        cd $GITHUB_WORKSPACE/app
-        sed -e "s/\$domain/${{ secrets.AWS_CLOUDFRONT_DOMAIN }}/" .env.auth-sample > .env
+      # AWS
+      - name: setup env file for aws
+        run: |
+          cd $GITHUB_WORKSPACE/app
+          sed -e "s/\$domain/${{ secrets.AWS_CLOUDFRONT_DOMAIN }}/" .env.auth-sample > .env
 
-    - name: Build for aws
-      env:
-        CI: false
-      run: |
-        cd $GITHUB_WORKSPACE/app
-        yarn
-        yarn build
+      - name: Build for aws
+        env:
+          CI: false
+        run: |
+          cd $GITHUB_WORKSPACE/app
+          yarn
+          yarn build
 
-    - name: Test for aws
-      env:
-        CI: false
-      run: |
-        cd $GITHUB_WORKSPACE/app
-        yarn test
+      - name: Test for aws
+        env:
+          CI: false
+        run: |
+          cd $GITHUB_WORKSPACE/app
+          yarn test
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/nautible-dev-githubactions-static-web-deploy-role
-        aws-region: ap-northeast-1
+      - name: Configure AWS credentials
+        id: login-aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/nautible-dev-githubactions-static-web-deploy-role
+          aws-region: ap-northeast-1
+        continue-on-error: true
 
-    - name: deploy to aws s3 
-      run: |
-        cd $GITHUB_WORKSPACE/app
-        aws s3 sync ./build s3://${{ secrets.AWS_S3_STATIC_WEB_BUCKET }} --exclude "*.git/*" --delete
+      - name: login-aws when command failure
+        run: echo "result - aws login failure"
+        if: steps.login-aws.outcome == 'failure'
 
-    # Azure
-    - name: setup env file for azure
-      run: |
-        cd $GITHUB_WORKSPACE/app
-        sed -e "s/\$domain/${{ secrets.AZURE_FRONTDOOR_DOMAIN }}/" .env.auth-sample > .env
+      - name: deploy to aws s3
+        run: |
+          cd $GITHUB_WORKSPACE/app
+          aws s3 sync ./build s3://${{ secrets.AWS_S3_STATIC_WEB_BUCKET }} --exclude "*.git/*" --delete
+        if: steps.login-aws.outcome == 'success'
 
-    - name: Build for azure
-      env:
-        CI: false
-      run: |
-        cd $GITHUB_WORKSPACE/app
-        yarn
-        yarn build
+      # Azure
+      - name: setup env file for azure
+        run: |
+          cd $GITHUB_WORKSPACE/app
+          sed -e "s/\$domain/${{ secrets.AZURE_FRONTDOOR_DOMAIN }}/" .env.auth-sample > .env
 
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Build for azure
+        env:
+          CI: false
+        run: |
+          cd $GITHUB_WORKSPACE/app
+          yarn
+          yarn build
 
-    - name: deploy to azure storage account
-      run: |
-        cd $GITHUB_WORKSPACE/app
-        az storage blob upload-batch --account-name nautibledevstaticweb -d '$web' -s ./build --overwrite=True
+      - name: Azure Login
+        id: login-azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        continue-on-error: true
+
+      - name: login-azure when command failure
+        run: echo "result - azure login failure"
+        if: steps.login-azure.outcome == 'failure'
+
+      - name: deploy to azure storage account
+        run: |
+          cd $GITHUB_WORKSPACE/app
+          az storage blob upload-batch --account-name nautibledevstaticweb -d '$web' -s ./build --overwrite=True
+        if: steps.login-azure.outcome == 'success'
